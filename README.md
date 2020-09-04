@@ -16,6 +16,6 @@ To delete the environment when finished:
 
 ## Dependencies
 
-[OpenEye Python Toolkit](https://docs.eyesopen.com/toolkits/python/)
+[BioPython](https://biopython.org/wiki/Documentation)
 
 [Requests](https://requests.readthedocs.io/en/master/)
