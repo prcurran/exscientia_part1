@@ -4,10 +4,9 @@ Used for reference:
 https://warwick.ac.uk/fac/sci/moac/people/students/peter_cock/python/protein_superposition/crystallography_pdb_alignment.py
 
 """
-from Bio import PDB
-from Bio.PDB import PDBParser, PDBIO, Superimposer, PPBuilder, Polypeptide
-from scipy.spatial import distance
 import numpy as np
+from Bio import PDB
+from scipy.spatial import distance
 
 
 class ModifiedResidue(PDB.Residue.Residue):
@@ -15,7 +14,7 @@ class ModifiedResidue(PDB.Residue.Residue):
         super().__init__(id, resname, segid)
 
     def __str__(self):
-        return Polypeptide.three_to_one(self.resname)
+        return PDB.Polypeptide.three_to_one(self.resname)
 
 
 PDB.Residue.Residue = ModifiedResidue
@@ -33,16 +32,18 @@ class ChainSuperimposer:
         :type other: `Bio.PDB.Chain`
         """
         self.spacer = "-"
+
         self.reference = reference
-        assert (reference.get_level() == 'C')
         self.reference_seq = self.sequence_with_spacers(self.reference)
 
         self.other = other
-        assert (other.get_level() == 'C')
         self.other_seq = self.sequence_with_spacers(self.other)
 
+        # ensure only single chains are supplied
+        assert (reference.get_level() == 'C')
+        assert (other.get_level() == 'C')
         # the sequence with spacer must be equal (and match the UniProt sequence)
-        assert(len(self.reference_seq) == len(self.other_seq))
+        assert (len(self.reference_seq) == len(self.other_seq))
 
     def superimpose(self, hetid=None, binding_site=False, within=8.0):
         """
@@ -74,7 +75,7 @@ class ChainSuperimposer:
             use = [all((str(res_a) == str(res_b), str(res_a) != "-"))
                    for res_a, res_b in zip(self.reference_seq, self.other_seq)]
 
-        super_imposer = Superimposer()
+        super_imposer = PDB.Superimposer()
         # set the active atoms
         # TODO: Could have some atom-based inclusion crtiera here e.g. backbone? etc.
         reference_atms = [atm for resi, flag in zip(self.reference_seq, use) for atm in resi if flag]
@@ -151,7 +152,7 @@ def protein_from_file(name, fpath):
     :return: a protein structure
     :rtype: `Bio.PDB.Structure.Structure`
     """
-    return PDBParser().get_structure(name, fpath)
+    return PDB.PDBParser().get_structure(name, fpath)
 
 
 def protein_to_file(structure, fpath):
@@ -163,13 +164,12 @@ def protein_to_file(structure, fpath):
     :type structure: `Bio.PDB.Structure.Structure`
     :type fpath: str
     """
-    io = PDBIO()
+    io = PDB.PDBIO()
     io.set_structure(structure)
     io.save(fpath)
 
 
 if __name__ == "__main__":
-
     a = protein_from_file("1aq1", "testdata/1aq1.pdb")
     b = protein_from_file("2vta", "testdata/2vta.pdb")
 
@@ -180,4 +180,3 @@ if __name__ == "__main__":
     cs.superimpose("STU", binding_site=True)
 
     protein_to_file(a, "testdata/aligned_1aq1.pdb")
-
