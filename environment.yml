@@ -1,0 +1,12 @@
+name: super
+channels:
+  - default
+  - conda-forge
+  - anaconda
+dependencies:
+  - biopython
+  - scipy
+  - numpy
+  - pip
+  - pip:
+      - requests
