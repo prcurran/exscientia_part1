@@ -1,5 +1,5 @@
 import unittest
-from src.superimposition import ChainSuperimposer, Helper
+from pdb_superimposer.superimposition import ChainSuperimposer, Helper
 import numpy as np
 
 

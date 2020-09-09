@@ -3,8 +3,8 @@ from multiprocessing import Pool
 
 from tqdm import tqdm
 
-from src.data_downloader import pdb_search_query, ftp_download
-from src.superimposition import ChainSuperimposer, Helper
+from pdb_superimposer.data_downloader import pdb_search_query, ftp_download
+from pdb_superimposer.superimposition import ChainSuperimposer, Helper
 
 
 def wrap_ftp_download(inputs):
