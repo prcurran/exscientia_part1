@@ -22,4 +22,4 @@ jobs:
           name: run tests
           command: |
             . venv/bin/activate
-            python tests/test_superimposition
+            python tests/test_superimposition.py
