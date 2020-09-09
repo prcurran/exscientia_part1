@@ -1,5 +1,5 @@
 import unittest
-from src.data_downloader import pdb_search_query, ftp_download
+from ../src/data_downloader import pdb_search_query, ftp_download
 import os
 from src.superimposition import Helper
 from Bio.PDB.Structure import Structure
