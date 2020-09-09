@@ -16,7 +16,7 @@ class TestChainSuperimposer(unittest.TestCase):
         # other
         pdb = "6YLK"
         self.a = Helper.protein_from_file(pdb,
-                                          os.path.join(parent, "testdata", "{pdb}.pdb"))
+                                          os.path.join(parent, "testdata", f"{pdb}.pdb"))
         self.coords_a = [atm.coord for atm in self.a.get_atoms()]
         self.chain_a = [c for c in self.a[0]][0]
 
