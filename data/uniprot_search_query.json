@@ -1,0 +1,33 @@
+{
+  "query": {
+    "type": "group",
+    "logical_operator": "and",
+    "nodes": [
+      {
+        "type": "terminal",
+        "service": "text",
+        "parameters": {
+          "operator": "exact_match",
+          "value": "P24941",
+          "attribute": "rcsb_polymer_entity_container_identifiers.reference_sequence_identifiers.database_accession"
+        }
+      },
+      {
+        "type": "terminal",
+        "service": "text",
+        "parameters": {
+          "operator": "exact_match",
+          "value": "UniProt",
+          "attribute": "rcsb_polymer_entity_container_identifiers.reference_sequence_identifiers.database_name"
+        }
+      }
+    ]
+  },
+  "request_options": {
+    "pager": {
+      "start": 0,
+      "rows": 500
+    }
+  },
+  "return_type": "polymer_entity"
+}

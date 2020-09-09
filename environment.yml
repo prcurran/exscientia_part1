@@ -7,6 +7,4 @@ dependencies:
   - biopython
   - scipy
   - numpy
-  - pip
-  - pip:
-      - requests
+  - tqdm

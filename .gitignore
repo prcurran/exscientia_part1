@@ -1,5 +1,9 @@
 # PyCharm
 .idea
+__pycache__
 
 # testdata
-.testdata/
+.pytest_cache/
+
+# my data
+pdb/
