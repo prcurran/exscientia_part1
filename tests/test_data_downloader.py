@@ -1,5 +1,6 @@
 import os
 import unittest
+import tempfile
 
 from Bio.PDB.Structure import Structure
 
@@ -9,7 +10,8 @@ from pdb_superimposer.superimposition import Helper
 
 class TestNoClassMethods(unittest.TestCase):
     def test_pdb_search_query(self):
-        with open("testdata/test_search.json", "r") as r:
+        parent = os.path.dirname(__file__)
+        with open(os.path.join(parent, "testdata", "test_search.json"), "r") as r:
             query = r.read()
 
         result = pdb_search_query(query)
@@ -21,7 +23,7 @@ class TestNoClassMethods(unittest.TestCase):
 
     def testftp_download(self):
         pdb = "2VTA"
-        out = "testdata"
+        out = tempfile.mkdtemp()
         response = ftp_download(pdb, out)
 
         # does the file exist

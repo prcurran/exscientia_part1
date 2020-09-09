@@ -1,3 +1,4 @@
+import os
 import unittest
 
 import numpy as np
@@ -7,12 +8,15 @@ from pdb_superimposer.superimposition import ChainSuperimposer, Helper
 
 class TestChainSuperimposer(unittest.TestCase):
     def setUp(self):
+        parent = os.path.dirname(__file__)
         # ref
-        self.ref = Helper.protein_from_file("2VTA", "testdata/2VTA.pdb")
+        self.ref = Helper.protein_from_file("2VTA",
+                                            os.path.join(parent, "testdata", "2VTA.pdb"))
         self.chain_ref = [c for c in self.ref[0]][0]
         # other
         pdb = "6YLK"
-        self.a = Helper.protein_from_file(pdb, f"testdata/{pdb}.pdb")
+        self.a = Helper.protein_from_file(pdb,
+                                          os.path.join(parent, "testdata", "{pdb}.pdb"))
         self.coords_a = [atm.coord for atm in self.a.get_atoms()]
         self.chain_a = [c for c in self.a[0]][0]
 
