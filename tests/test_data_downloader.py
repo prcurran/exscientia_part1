@@ -1,8 +1,10 @@
-import unittest
-from ../src/data_downloader import pdb_search_query, ftp_download
 import os
-from pdb_superimposer.superimposition import Helper
+import unittest
+
 from Bio.PDB.Structure import Structure
+
+from pdb_superimposer.data_downloader import pdb_search_query, ftp_download
+from pdb_superimposer.superimposition import Helper
 
 
 class TestNoClassMethods(unittest.TestCase):
@@ -18,7 +20,6 @@ class TestNoClassMethods(unittest.TestCase):
         self.assertIn("result_set", result)
 
     def testftp_download(self):
-
         pdb = "2VTA"
         out = "testdata"
         response = ftp_download(pdb, out)

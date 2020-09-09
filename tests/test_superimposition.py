@@ -1,6 +1,8 @@
 import unittest
-from pdb_superimposer.superimposition import ChainSuperimposer, Helper
+
 import numpy as np
+
+from pdb_superimposer.superimposition import ChainSuperimposer, Helper
 
 
 class TestChainSuperimposer(unittest.TestCase):
@@ -40,10 +42,8 @@ class TestChainSuperimposer(unittest.TestCase):
 
         # did all atoms move?
         moved = [atm.coord for atm in self.a.get_atoms()]
-        self.assertTrue(all([np.linalg.norm(a-b) != 0 for a, b in zip(self.coords_a, moved)]))
+        self.assertTrue(all([np.linalg.norm(a - b) != 0 for a, b in zip(self.coords_a, moved)]))
 
 
 if __name__ == '__main__':
     unittest.main()
-
-

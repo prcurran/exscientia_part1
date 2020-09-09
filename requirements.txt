@@ -1,4 +1,8 @@
 biopython
-scipy
 numpy
+pytest
+flake8
+scipy
 tqdm
+
+
