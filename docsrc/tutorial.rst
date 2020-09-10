@@ -51,7 +51,6 @@ Test the Code
 .. code-block:: shell
 
     conda activate super
-    conda env create -f environment.yml
     pip install .
 
 
@@ -66,7 +65,7 @@ Test the Code
 
 .. code-block:: shell
 
-    conda env remove --name super --all
+    conda env remove -n super
     rm -rf pdb_superimposer
 
 

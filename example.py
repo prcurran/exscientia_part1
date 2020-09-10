@@ -49,7 +49,6 @@ def main():
     with Pool(processes=processes) as pool:
         list(tqdm(pool.imap_unordered(wrap_ftp_download, args), total=len(pdb_entities)))
 
-
     # Step 3: Overlay
     print(f"Superimpose to {ref_id}")
     reference = Helper.protein_from_file(ref_id, os.path.join(out_dir, f"{ref_id}.pdb"))
@@ -57,11 +56,10 @@ def main():
 
     aligned_dir = check_dir(os.path.join(out_dir, "aligned"))
 
-    for pdb, entity in pdb_entities.items():
-        print(pdb)
+    for pdb, entity in tqdm(pdb_entities.items()):
         other = Helper.protein_from_file(pdb, os.path.join(out_dir, f"{pdb}.pdb"))
         # always take the first model, the polymer_entity code is the code that matched in the UniProt search
-        other_chain = [c for c in other[0]][polymer_entity]
+        other_chain = [c for c in other[0]][entity]
 
         cs = ChainSuperimposer(reference=ref_chain, other=other_chain, other_struc=other)
         cs.superimpose()

@@ -56,10 +56,11 @@ class ChainSuperimposer:
         """
         sele = set(self.reference_seq.keys()).intersection(set(self.other_seq.keys()))
 
-        for i in sele:
+        # for testing
+        # for i in sele:
             # print(self.reference_seq[i].resname != self.other_seq[i].resname)
             # print(self.is_residue_incomplete(self.reference_seq[i]))
-            print(self.is_residue_incomplete(self.other_seq[i]))
+            # print(self.is_residue_incomplete(self.other_seq[i]))
 
         rm = {i for i in sele if
               any((self.reference_seq[i].resname != self.other_seq[i].resname,
