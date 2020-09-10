@@ -30,7 +30,6 @@
 3. Install this package
 
         conda activate super
-        conda env create -f environment.yml
         pip install .
 
 4. Run the CDK2 example
