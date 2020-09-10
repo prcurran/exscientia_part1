@@ -38,5 +38,5 @@
 
 5. Remove environment and clean up
 
-        conda env remove --name super --all
+        conda env remove -n super
         rm -rf pdb_superimposer
