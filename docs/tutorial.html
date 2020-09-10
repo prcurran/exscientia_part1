@@ -1,0 +1,402 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Introduction &mdash; PDB Chain Superimposer 0.1 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Data Downloader Module" href="data_downloader.html" />
+    <link rel="prev" title="Welcome to PDB Chain Superimposer’s documentation!" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> PDB Chain Superimposer
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Introduction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#objective">Objective</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#solution">Solution</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="#test-the-code">Test the Code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#cdk2-example">CDK2 Example</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#step-1-search-the-pdb">Step 1: Search the PDB</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#step-2-download-the-search-hits">Step 2: Download the Search Hits</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#step-3-the-superimposition">Step 3: The Superimposition</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="data_downloader.html">Data Downloader Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="superimposition.html">Superimposition Module</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">PDB Chain Superimposer</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Introduction</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/tutorial.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="introduction">
+<h1>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="objective">
+<h2>Objective<a class="headerlink" href="#objective" title="Permalink to this headline">¶</a></h2>
+<p>The aim of this task was to retrieve and superimpose PDB structures using
+open source tools and services and to demonstrate the functionality using CDK2,
+UniProt: P24941 as an example.</p>
+</div>
+<div class="section" id="solution">
+<h2>Solution<a class="headerlink" href="#solution" title="Permalink to this headline">¶</a></h2>
+<p>The solution to this problem required two parts:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>Search and retrieve data from the PDB. This was implemented by using urllib from the Python standard library to wrap around the RCSB PDB’s webservices.</p></li>
+<li><p>Superimpose the retrieved data. This was implemented using BioPython’s PDB parsing and Superimposition functionality</p></li>
+</ol>
+</div></blockquote>
+<p>Although this is a small demo task, I have tried to demonstrate coding practices that I
+would employ in larger projects:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>I’ve used a “tests first” approach.</p></li>
+<li><p>Setup continuous integration with CircleCI.</p></li>
+<li><p>Configured documentation with Sphinx</p></li>
+</ul>
+</div></blockquote>
+</div>
+</div>
+<div class="section" id="test-the-code">
+<h1>Test the Code<a class="headerlink" href="#test-the-code" title="Permalink to this headline">¶</a></h1>
+<ol class="arabic simple">
+<li><p>Clone this repository</p></li>
+</ol>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/prcurran/pdb_superimposer.git
+</pre></div>
+</div>
+<ol class="arabic simple" start="2">
+<li><p>Create a new environment</p></li>
+</ol>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>conda env create -f environment.yml
+</pre></div>
+</div>
+<ol class="arabic simple" start="3">
+<li><p>Install this package</p></li>
+</ol>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>conda activate super
+conda env create -f environment.yml
+pip install .
+</pre></div>
+</div>
+<ol class="arabic simple" start="4">
+<li><p>Run the CDK2 example</p></li>
+</ol>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>python example.py
+</pre></div>
+</div>
+<ol class="arabic simple" start="5">
+<li><p>Remove environment and clean up</p></li>
+</ol>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>conda env remove --name super --all
+rm -rf pdb_superimposer
+</pre></div>
+</div>
+</div>
+<div class="section" id="cdk2-example">
+<h1>CDK2 Example<a class="headerlink" href="#cdk2-example" title="Permalink to this headline">¶</a></h1>
+<p>This section will run through the code for the CDK2 example</p>
+<div class="section" id="step-1-search-the-pdb">
+<h2>Step 1: Search the PDB<a class="headerlink" href="#step-1-search-the-pdb" title="Permalink to this headline">¶</a></h2>
+<p>The first step is to search the PDB. This is done using the RCSB Search API which is a RESTful API
+service that uses URL encoded JSON payloads over HTTP.</p>
+<p>The full documentation for the query syntax can be found <a class="reference external" href="http://search.rcsb.org/">here</a>.</p>
+<dl class="simple">
+<dt>For this example, we use 3 of the request building blocks:</dt><dd><ul class="simple">
+<li><p><cite>query</cite> : This is where the search expression is constructed. For this example only the uniprot code is used but others could have been included (such as structure resolution).</p></li>
+<li><p><cite>request_options</cite> : This controls various aspects of the search request, the pagination was alter to ensure all results were returned (default = first 10).</p></li>
+<li><p><cite>return_type</cite>: Specifics the type of returned identifiers, the polymer entity was used over entity since each entity can contain multiple polymers.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="highlight-JSON notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;query&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;group&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;logical_operator&quot;</span><span class="p">:</span> <span class="s2">&quot;and&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;nodes&quot;</span><span class="p">:</span> <span class="p">[</span>
+      <span class="p">{</span>
+        <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;terminal&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;service&quot;</span><span class="p">:</span> <span class="s2">&quot;text&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;parameters&quot;</span><span class="p">:</span> <span class="p">{</span>
+          <span class="nt">&quot;operator&quot;</span><span class="p">:</span> <span class="s2">&quot;exact_match&quot;</span><span class="p">,</span>
+          <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;P24941&quot;</span><span class="p">,</span>
+          <span class="nt">&quot;attribute&quot;</span><span class="p">:</span> <span class="s2">&quot;rcsb_polymer_entity_container_identifiers.reference_sequence_identifiers.database_accession&quot;</span>
+        <span class="p">}</span>
+      <span class="p">},</span>
+      <span class="p">{</span>
+        <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;terminal&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;service&quot;</span><span class="p">:</span> <span class="s2">&quot;text&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;parameters&quot;</span><span class="p">:</span> <span class="p">{</span>
+          <span class="nt">&quot;operator&quot;</span><span class="p">:</span> <span class="s2">&quot;exact_match&quot;</span><span class="p">,</span>
+          <span class="nt">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;UniProt&quot;</span><span class="p">,</span>
+          <span class="nt">&quot;attribute&quot;</span><span class="p">:</span> <span class="s2">&quot;rcsb_polymer_entity_container_identifiers.reference_sequence_identifiers.database_name&quot;</span>
+        <span class="p">}</span>
+      <span class="p">}</span>
+    <span class="p">]</span>
+  <span class="p">},</span>
+  <span class="nt">&quot;request_options&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;pager&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;start&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+      <span class="nt">&quot;rows&quot;</span><span class="p">:</span> <span class="mi">500</span>
+    <span class="p">}</span>
+  <span class="p">},</span>
+  <span class="nt">&quot;return_type&quot;</span><span class="p">:</span> <span class="s2">&quot;polymer_entity&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>The query was read from file and <a class="reference external" href="https://docs.python.org/3/library/urllib.html/">urllib</a>. was used to send the request</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">search_query_path</span> <span class="o">=</span> <span class="s2">&quot;example_search.json&quot;</span>
+
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">search_query_path</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">r</span><span class="p">:</span>
+    <span class="n">query</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>  <span class="c1"># keep query as str</span>
+
+<span class="n">results</span> <span class="o">=</span> <span class="n">pdb_search_query</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+
+<span class="n">pdb_entities</span> <span class="o">=</span> <span class="p">{</span><span class="n">i</span><span class="p">[</span><span class="s2">&quot;identifier&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]:</span> <span class="nb">int</span><span class="p">(</span><span class="n">i</span><span class="p">[</span><span class="s2">&quot;identifier&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">])</span> <span class="o">-</span> <span class="mi">1</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">results</span><span class="p">[</span><span class="s2">&quot;result_set&quot;</span><span class="p">]}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="step-2-download-the-search-hits">
+<h2>Step 2: Download the Search Hits<a class="headerlink" href="#step-2-download-the-search-hits" title="Permalink to this headline">¶</a></h2>
+<p>Next, the data is download. This is done using the <a class="reference external" href="https://www.rcsb.org/pdb/static.do?p=download/ftp/ftp_site_layout.html/">RCSB FTP service</a>.
+Since for CDK2 there are over 400 entries, <a class="reference external" href="https://docs.python.org/3/library/multiprocessing.html/">multiprocessing</a> has been implemented to download
+the files in parallel. I’ve also incorported a <a class="reference external" href="https://github.com/tqdm/tqdm/">tqdm</a>
+progress bar so that the user can see something is happening.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">wrap_ftp_download</span><span class="p">(</span><span class="n">inputs</span><span class="p">):</span>
+<span class="c1">#  simple wrapper to manage flow of args</span>
+<span class="n">pdb</span><span class="p">,</span> <span class="n">out_dir</span> <span class="o">=</span> <span class="n">inputs</span>
+<span class="k">return</span> <span class="n">ftp_download</span><span class="p">(</span><span class="n">pdb</span><span class="p">,</span> <span class="n">out_dir</span><span class="p">)</span>
+
+<span class="n">args</span> <span class="o">=</span> <span class="p">((</span><span class="n">a</span><span class="p">,</span> <span class="n">out_dir</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">pdb_entities</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+<span class="k">with</span> <span class="n">Pool</span><span class="p">(</span><span class="n">processes</span><span class="o">=</span><span class="n">processes</span><span class="p">)</span> <span class="k">as</span> <span class="n">pool</span><span class="p">:</span>
+    <span class="nb">list</span><span class="p">(</span><span class="n">tqdm</span><span class="p">(</span><span class="n">pool</span><span class="o">.</span><span class="n">imap_unordered</span><span class="p">(</span><span class="n">wrap_ftp_download</span><span class="p">,</span> <span class="n">args</span><span class="p">),</span> <span class="n">total</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">pdb_entities</span><span class="p">)))</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="step-3-the-superimposition">
+<h2>Step 3: The Superimposition<a class="headerlink" href="#step-3-the-superimposition" title="Permalink to this headline">¶</a></h2>
+<p>Finally, the downloaded files can be superimposed. <a class="reference external" href="https://biopython.org/">BioPython’s</a>
+<code class="xref py py-class docutils literal notranslate"><span class="pre">Bio.PDB.Superimposer.Superimposer</span></code> contains
+the functionality to do the actual transformation, minimising the RMS in the solution. However,
+the selection of the atoms to be considered in the superimposition had to be implemented in this
+package. Each residue in a PDB file contains a sequence identifier which corresponds to that residues
+position when aligned with the UniProt reference sequence. I used these identifier to ensure:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>In both the <cite>reference</cite> and <cite>other</cite> chain there are residues at a given index (some are missing, some are expression tags)</p></li>
+<li><p>At a given index, the residue in <cite>reference</cite> and <cite>other</cite> is the same (some are mutated)</p></li>
+<li><p>For a given residue, all atoms are present (some are partially model)</p></li>
+<li><p>For a given residue, only heavy atoms are considered</p></li>
+</ul>
+</div></blockquote>
+<p>I also included functionality to only select binding site residues since this is a useful operation
+in some use case. As this task required ALL CDK2 structures, and some structures don’t have bound ligands
+it wasn’t used here.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">reference</span> <span class="o">=</span> <span class="n">Helper</span><span class="o">.</span><span class="n">protein_from_file</span><span class="p">(</span><span class="n">ref_id</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">out_dir</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">ref_id</span><span class="si">}</span><span class="s2">.pdb&quot;</span><span class="p">))</span>
+<span class="n">ref_chain</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">reference</span><span class="p">[</span><span class="mi">0</span><span class="p">]][</span><span class="n">polymer_entity</span><span class="p">]</span>
+
+<span class="k">for</span> <span class="n">pdb</span><span class="p">,</span> <span class="n">entity</span> <span class="ow">in</span> <span class="n">pdb_entities</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="n">other</span> <span class="o">=</span> <span class="n">Helper</span><span class="o">.</span><span class="n">protein_from_file</span><span class="p">(</span><span class="n">pdb</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">out_dir</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">pdb</span><span class="si">}</span><span class="s2">.pdb&quot;</span><span class="p">))</span>
+    <span class="n">other_chain</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">other</span><span class="p">[</span><span class="mi">0</span><span class="p">]][</span><span class="n">polymer_entity</span><span class="p">]</span>
+
+    <span class="n">cs</span> <span class="o">=</span> <span class="n">ChainSuperimposer</span><span class="p">(</span><span class="n">reference</span><span class="o">=</span><span class="n">ref_chain</span><span class="p">,</span> <span class="n">other</span><span class="o">=</span><span class="n">other_chain</span><span class="p">,</span> <span class="n">other_struc</span><span class="o">=</span><span class="n">other</span><span class="p">)</span>
+    <span class="n">cs</span><span class="o">.</span><span class="n">superimpose</span><span class="p">()</span>
+
+    <span class="n">Helper</span><span class="o">.</span><span class="n">protein_to_file</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="o">&lt;</span><span class="n">out_path</span><span class="o">&gt;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="data_downloader.html" class="btn btn-neutral float-right" title="Data Downloader Module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to PDB Chain Superimposer’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Peter Curran
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

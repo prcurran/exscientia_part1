@@ -1,23 +1,31 @@
 """
 
-Functionality to superimpose protein chains
+A Module to superimpose two protein chains.
 
 """
+
 import numpy as np
 from Bio import PDB
 from scipy.spatial import distance
 
 
 class ChainSuperimposer:
+    """ A class to organise the superimposition of two chains. First the atoms involved in the operation
+    are selected. Then :class:`Bio.PDB.Superimposer.Superimposer` is employed to do the superimposition.
+    """
+
     def __init__(self, reference, other, other_struc):
         """
-        Class to managed the data and methods for protein chain superimposition.
-        Initialise with a reference and query chain.
 
-        :param reference: Superimposition template
-        :param other: Chain to be transformed
-        :type reference: `Bio.PDB.Chain.Chain`
-        :type other: `Bio.PDB.Chain.Chain`
+        Initialise the class.
+
+        :param reference: The chain used as a template in the superimposition.
+        :type reference: :class:`Bio.PDB.Chain.Chain`
+        :param other: The chain to be transformed.
+        :type other: :class:`Bio.PDB.Chain.Chain`
+        :param other_struc: The structure object of the other chain. This enables the transformation matrix to be applied across the whole structure.
+        :type other_struc: :class:`Bio.PDB.Structure.Structure`
+
         """
         # Input data
         self.reference = reference
@@ -38,38 +46,62 @@ class ChainSuperimposer:
     def _residue_selection(self):
         """
         A class method to do the essential residue filtering using the UniProt sequence positions.
-            - Find intersecting sequence indices
-            - Remove index if the residue type at a given position is not the same
-            - Remove index if either the reference or other residue is incomplete
+
+            - Find intersecting sequence indices between the reference and other.
+            - Remove index if at a given UniProt index the residue type in reference and other is not the same
+            - Remove index if at a given UniProt index either the reference or other residue is incomplete
 
         :return: A set of sequence indices
         :rtype: set
         """
         sele = set(self.reference_seq.keys()).intersection(set(self.other_seq.keys()))
 
+        for i in sele:
+            # print(self.reference_seq[i].resname != self.other_seq[i].resname)
+            # print(self.is_residue_incomplete(self.reference_seq[i]))
+            print(self.is_residue_incomplete(self.other_seq[i]))
+
         rm = {i for i in sele if
               any((self.reference_seq[i].resname != self.other_seq[i].resname,
-                   self.is_incomplete(self.reference_seq[i]),
-                   self.is_incomplete(self.other_seq[i])
+                   self.is_residue_incomplete(self.reference_seq[i]),
+                   self.is_residue_incomplete(self.other_seq[i])
                    ))
               }
+
         for r in rm:
             sele.remove(r)
         return sele
 
-    def superimpose(self, hetid=None, binding_site=False, within=8.0):
+    def superimpose(self, hetid=None, within=8.0):
         """
-        Superimpose other to reference, if hetid is and supplied and binding_site set to True
-        then only the binding site residues will be used for the superimposition.
+
+        The superimposition method. If optional `hetid` is supplied, only binding site
+        residues will used for the superimposition.
 
         :param hetid: Ligand identifier
-        :param binding_site: flag
-        :param within: binding site cutoff distance
         :type hetid: str
+        :param binding_site: flag
         :type binding_site: bool
+        :param within: binding site cutoff distance
         :type within: float
+
+        .. code-block:: python
+
+            # Example useage
+            from pdb_superimposer import ChainSuperimposer, Helper
+
+            ref = Helper.protein_from_file("2VTA", "2VTA.pdb")
+            ref_chain = [c for c in ref[0]][0]
+
+            other = Helper.protein_from_file("6YLK", "6YLK.pdb")
+            ref_chain = [c for c in other[0]][0]
+
+            cs = ChainSuperimposer(reference=ref_chain, other=other_chain, other_struc=other)
+            cs.superimpose()
+
+
         """
-        if binding_site and hetid:
+        if hetid:
             # detect binding site
             bs = self.binding_site(chain=self.other, hetid=hetid, within=within)
             self.selected_index = self.selected_index.intersection(bs)
@@ -78,9 +110,9 @@ class ChainSuperimposer:
 
         # set the active atoms
         reference_atms = [atm for resi in self.reference_seq.values() for atm in resi
-                          if resi.get_id()[1] in self.selected_index]
+                          if resi.get_id()[1] in self.selected_index and atm.element != "H"]
         other_atms = [atm for resi in self.other_seq.values() for atm in resi
-                      if resi.get_id()[1] in self.selected_index]
+                      if resi.get_id()[1] in self.selected_index and atm.element != "H"]
         super_imposer.set_atoms(reference_atms, other_atms)
 
         # apply the transformation matrix to the whole chain
@@ -88,20 +120,29 @@ class ChainSuperimposer:
         self.rms = super_imposer.rms
 
     @staticmethod
-    def is_incomplete(res):
+    def is_residue_incomplete(res):
         """
-        Determine whether the residue is incomplete (i.e. whether there are missing residues)
+        Determine whether the residue is incomplete (i.e. whether there are missing residue atoms)
 
         :param res: A PDB residue
         :type: `Bio.PDB.Residue.Residue`
         :return: A boolean expressing whether the residue is incomplete
         :rtype: bool
+
+        >>> from pdb_superimposer import ChainSuperimposer, Helper
+        >>> ref = Helper.protein_from_file("2VTA", "2VTA.pdb")
+        >>> ref_chain = [c for c in ref[0]][0]
+        >>> first_res = [r for r in ref_chain][0]
+        >>> bs = ChainSuperimposer.is_residue_incomplete(first_res)
+        False
+
         """
         aa_atm_dic = {'MET': 8, 'GLU': 9, 'ASN': 8, 'PHE': 11, 'GLN': 9, 'LYS': 9,
                       'VAL': 7, 'ILE': 8, 'GLY': 4, 'THR': 7, 'TYR': 12, 'ALA': 5,
                       'ARG': 11, 'LEU': 8, 'SER': 6, 'HIS': 10, 'PRO': 7, 'ASP': 8,
                       'CYS': 6, 'TRP': 14}
-        return len(res) != aa_atm_dic[res.resname]
+
+        return len([a for a in res if a.element != "H"]) != aa_atm_dic[res.resname]
 
     @staticmethod
     def binding_site(chain, hetid, within=8.0):
@@ -116,6 +157,13 @@ class ChainSuperimposer:
         :type within: float
         :return: A boolean list denoting inclusion in the superimposition operation
         :rtype: list
+
+        >>> from pdb_superimposer import ChainSuperimposer, Helper
+        >>> ref = Helper.protein_from_file("2VTA", "2VTA.pdb")
+        >>> ref_chain = [c for c in ref[0]][0]
+        >>> ans = ChainSuperimposer.binding_site(ref_chain, "LZ1", 10.0)
+        {1, 2, 3, ...}
+
         """
         # array of ligand coords
         ligand = [resi for resi in chain if hetid in resi.get_id()[0]][0]

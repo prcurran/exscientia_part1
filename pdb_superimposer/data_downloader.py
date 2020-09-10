@@ -1,5 +1,7 @@
 """
-https://search.rcsb.org/index.html#search-api
+
+A module for key PDB data collection tools
+
 """
 import json
 import os
@@ -9,12 +11,11 @@ from urllib.request import Request, urlopen
 
 def pdb_search_query(query):
     """
-    Wrapper around the RSCB PDB search API
-    Tutorial here: https://search.rcsb.org/index.html#search-api
+    Wrapper around the `RCSB PDB Search API  <https://search.rcsb.org/index.html#search-api/>`_.
 
-    :param query: query json str, see PDB tutorial for information on construction
+    :param query: Query as a json str
     :type query: str
-    :return: returns a json with search result
+    :return: Search result
     :rtype: dict
     """
 
@@ -34,21 +35,20 @@ def pdb_search_query(query):
 
 def ftp_download(pdb_code, out_dir="pdb"):
     """
-    Wrapper around RSCB PDB FTP
+    Wrapper around `RCSB PDB FTP <https://www.rcsb.org/pdb/static.do?p=download/ftp/ftp_site_layout.html/>`_.
 
     :param pdb_code: PDB code for desired file
     :type pdb_code: str
     :param out_dir: Path to output directory
-    :type: str
+    :type out_dir: str
     :return: Returns PDB code if download failed
     :rtype: None or str
     """
-    try:
-        url = f"https://files.rcsb.org/download/{pdb_code}.pdb"
-        response = urlopen(Request(url))
-        f = response.read().decode("utf-8")
-        # write out decoded file
-        with open(os.path.join(out_dir, f"{pdb_code}.pdb"), "w") as w:
-            w.write(f)
-    except:
-        return pdb_code
+
+    url = f"https://files.rcsb.org/download/{pdb_code}.pdb"
+    response = urlopen(Request(url))
+    f = response.read().decode("utf-8")
+    # write out decoded file
+    with open(os.path.join(out_dir, f"{pdb_code}.pdb"), "w") as w:
+        w.write(f)
+

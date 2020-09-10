@@ -1,0 +1,408 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>pdb_superimposer.superimposition &mdash; PDB Chain Superimposer 0.1 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home" alt="Documentation Home"> PDB Chain Superimposer
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorial.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorial.html#test-the-code">Test the Code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorial.html#cdk2-example">CDK2 Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../data_downloader.html">Data Downloader Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../superimposition.html">Superimposition Module</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">PDB Chain Superimposer</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>pdb_superimposer.superimposition</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for pdb_superimposer.superimposition</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">A Module to superimpose two protein chains.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">Bio</span> <span class="kn">import</span> <span class="n">PDB</span>
+<span class="kn">from</span> <span class="nn">scipy.spatial</span> <span class="kn">import</span> <span class="n">distance</span>
+
+
+<div class="viewcode-block" id="ChainSuperimposer"><a class="viewcode-back" href="../../superimposition.html#pdb_superimposer.superimposition.ChainSuperimposer">[docs]</a><span class="k">class</span> <span class="nc">ChainSuperimposer</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot; A class to organise the superimposition of two chains. First the atoms involved in the operation</span>
+<span class="sd">    are selected. Then :class:`Bio.PDB.Superimposer.Superimposer` is employed to do the superimposition.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="ChainSuperimposer.__init__"><a class="viewcode-back" href="../../superimposition.html#pdb_superimposer.superimposition.ChainSuperimposer.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reference</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">other_struc</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        Initialise the class.</span>
+
+<span class="sd">        :param reference: The chain used as a template in the superimposition.</span>
+<span class="sd">        :type reference: :class:`Bio.PDB.Chain.Chain`</span>
+<span class="sd">        :param other: The chain to be transformed.</span>
+<span class="sd">        :type other: :class:`Bio.PDB.Chain.Chain`</span>
+<span class="sd">        :param other_struc: The structure object of the other chain. This enables the transformation matrix to be applied across the whole structure.</span>
+<span class="sd">        :type other_struc: :class:`Bio.PDB.Structure.Structure`</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Input data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reference</span> <span class="o">=</span> <span class="n">reference</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">other</span> <span class="o">=</span> <span class="n">other</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">other_struc</span> <span class="o">=</span> <span class="n">other_struc</span>  <span class="c1"># Needed to translate the whole structure</span>
+
+        <span class="c1"># ensure only single chains are supplied</span>
+        <span class="k">assert</span> <span class="p">(</span><span class="n">reference</span><span class="o">.</span><span class="n">get_level</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;C&#39;</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">get_level</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;C&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Setup a dictionary matching uniprot res index with res. Discard ligands and water.</span>
+        <span class="c1"># res.get_id()[0] ---&gt; hetid flag</span>
+        <span class="c1"># res.get_id()[1] ---&gt; res index</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reference_seq</span> <span class="o">=</span> <span class="p">{</span><span class="n">res</span><span class="o">.</span><span class="n">get_id</span><span class="p">()[</span><span class="mi">1</span><span class="p">]:</span> <span class="n">res</span> <span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">reference</span> <span class="k">if</span> <span class="n">res</span><span class="o">.</span><span class="n">get_id</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot; &quot;</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">other_seq</span> <span class="o">=</span> <span class="p">{</span><span class="n">res</span><span class="o">.</span><span class="n">get_id</span><span class="p">()[</span><span class="mi">1</span><span class="p">]:</span> <span class="n">res</span> <span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">other</span> <span class="k">if</span> <span class="n">res</span><span class="o">.</span><span class="n">get_id</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot; &quot;</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">selected_index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_residue_selection</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="ChainSuperimposer._residue_selection"><a class="viewcode-back" href="../../superimposition.html#pdb_superimposer.superimposition.ChainSuperimposer._residue_selection">[docs]</a>    <span class="k">def</span> <span class="nf">_residue_selection</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        A class method to do the essential residue filtering using the UniProt sequence positions.</span>
+
+<span class="sd">            - Find intersecting sequence indices between the reference and other.</span>
+<span class="sd">            - Remove index if at a given UniProt index the residue type in reference and other is not the same</span>
+<span class="sd">            - Remove index if at a given UniProt index either the reference or other residue is incomplete</span>
+
+<span class="sd">        :return: A set of sequence indices</span>
+<span class="sd">        :rtype: set</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">sele</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reference_seq</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">other_seq</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">sele</span><span class="p">:</span>
+            <span class="c1"># print(self.reference_seq[i].resname != self.other_seq[i].resname)</span>
+            <span class="c1"># print(self.is_residue_incomplete(self.reference_seq[i]))</span>
+            <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">is_residue_incomplete</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">other_seq</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
+
+        <span class="n">rm</span> <span class="o">=</span> <span class="p">{</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">sele</span> <span class="k">if</span>
+              <span class="nb">any</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">reference_seq</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">resname</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">other_seq</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">resname</span><span class="p">,</span>
+                   <span class="bp">self</span><span class="o">.</span><span class="n">is_residue_incomplete</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reference_seq</span><span class="p">[</span><span class="n">i</span><span class="p">]),</span>
+                   <span class="bp">self</span><span class="o">.</span><span class="n">is_residue_incomplete</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">other_seq</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                   <span class="p">))</span>
+              <span class="p">}</span>
+
+        <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">rm</span><span class="p">:</span>
+            <span class="n">sele</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">sele</span></div>
+
+<div class="viewcode-block" id="ChainSuperimposer.superimpose"><a class="viewcode-back" href="../../superimposition.html#pdb_superimposer.superimposition.ChainSuperimposer.superimpose">[docs]</a>    <span class="k">def</span> <span class="nf">superimpose</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hetid</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">within</span><span class="o">=</span><span class="mf">8.0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        The superimposition method. If optional `hetid` is supplied, only binding site</span>
+<span class="sd">        residues will used for the superimposition.</span>
+
+<span class="sd">        :param hetid: Ligand identifier</span>
+<span class="sd">        :type hetid: str</span>
+<span class="sd">        :param binding_site: flag</span>
+<span class="sd">        :type binding_site: bool</span>
+<span class="sd">        :param within: binding site cutoff distance</span>
+<span class="sd">        :type within: float</span>
+
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">            # Example useage</span>
+<span class="sd">            from pdb_superimposer import ChainSuperimposer, Helper</span>
+
+<span class="sd">            ref = Helper.protein_from_file(&quot;2VTA&quot;, &quot;2VTA.pdb&quot;)</span>
+<span class="sd">            ref_chain = [c for c in ref[0]][0]</span>
+
+<span class="sd">            other = Helper.protein_from_file(&quot;6YLK&quot;, &quot;6YLK.pdb&quot;)</span>
+<span class="sd">            ref_chain = [c for c in other[0]][0]</span>
+
+<span class="sd">            cs = ChainSuperimposer(reference=ref_chain, other=other_chain, other_struc=other)</span>
+<span class="sd">            cs.superimpose()</span>
+
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">hetid</span><span class="p">:</span>
+            <span class="c1"># detect binding site</span>
+            <span class="n">bs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">binding_site</span><span class="p">(</span><span class="n">chain</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">other</span><span class="p">,</span> <span class="n">hetid</span><span class="o">=</span><span class="n">hetid</span><span class="p">,</span> <span class="n">within</span><span class="o">=</span><span class="n">within</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">selected_index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">selected_index</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">bs</span><span class="p">)</span>
+
+        <span class="n">super_imposer</span> <span class="o">=</span> <span class="n">PDB</span><span class="o">.</span><span class="n">Superimposer</span><span class="p">()</span>
+
+        <span class="c1"># set the active atoms</span>
+        <span class="n">reference_atms</span> <span class="o">=</span> <span class="p">[</span><span class="n">atm</span> <span class="k">for</span> <span class="n">resi</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">reference_seq</span><span class="o">.</span><span class="n">values</span><span class="p">()</span> <span class="k">for</span> <span class="n">atm</span> <span class="ow">in</span> <span class="n">resi</span>
+                          <span class="k">if</span> <span class="n">resi</span><span class="o">.</span><span class="n">get_id</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">selected_index</span> <span class="ow">and</span> <span class="n">atm</span><span class="o">.</span><span class="n">element</span> <span class="o">!=</span> <span class="s2">&quot;H&quot;</span><span class="p">]</span>
+        <span class="n">other_atms</span> <span class="o">=</span> <span class="p">[</span><span class="n">atm</span> <span class="k">for</span> <span class="n">resi</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">other_seq</span><span class="o">.</span><span class="n">values</span><span class="p">()</span> <span class="k">for</span> <span class="n">atm</span> <span class="ow">in</span> <span class="n">resi</span>
+                      <span class="k">if</span> <span class="n">resi</span><span class="o">.</span><span class="n">get_id</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">selected_index</span> <span class="ow">and</span> <span class="n">atm</span><span class="o">.</span><span class="n">element</span> <span class="o">!=</span> <span class="s2">&quot;H&quot;</span><span class="p">]</span>
+        <span class="n">super_imposer</span><span class="o">.</span><span class="n">set_atoms</span><span class="p">(</span><span class="n">reference_atms</span><span class="p">,</span> <span class="n">other_atms</span><span class="p">)</span>
+
+        <span class="c1"># apply the transformation matrix to the whole chain</span>
+        <span class="n">super_imposer</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">other_struc</span><span class="o">.</span><span class="n">get_atoms</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rms</span> <span class="o">=</span> <span class="n">super_imposer</span><span class="o">.</span><span class="n">rms</span></div>
+
+<div class="viewcode-block" id="ChainSuperimposer.is_residue_incomplete"><a class="viewcode-back" href="../../superimposition.html#pdb_superimposer.superimposition.ChainSuperimposer.is_residue_incomplete">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">is_residue_incomplete</span><span class="p">(</span><span class="n">res</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Determine whether the residue is incomplete (i.e. whether there are missing residue atoms)</span>
+
+<span class="sd">        :param res: A PDB residue</span>
+<span class="sd">        :type: `Bio.PDB.Residue.Residue`</span>
+<span class="sd">        :return: A boolean expressing whether the residue is incomplete</span>
+<span class="sd">        :rtype: bool</span>
+
+<span class="sd">        &gt;&gt;&gt; from pdb_superimposer import ChainSuperimposer, Helper</span>
+<span class="sd">        &gt;&gt;&gt; ref = Helper.protein_from_file(&quot;2VTA&quot;, &quot;2VTA.pdb&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; ref_chain = [c for c in ref[0]][0]</span>
+<span class="sd">        &gt;&gt;&gt; first_res = [r for r in ref_chain][0]</span>
+<span class="sd">        &gt;&gt;&gt; bs = ChainSuperimposer.is_residue_incomplete(first_res)</span>
+<span class="sd">        False</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">aa_atm_dic</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;MET&#39;</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span> <span class="s1">&#39;GLU&#39;</span><span class="p">:</span> <span class="mi">9</span><span class="p">,</span> <span class="s1">&#39;ASN&#39;</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span> <span class="s1">&#39;PHE&#39;</span><span class="p">:</span> <span class="mi">11</span><span class="p">,</span> <span class="s1">&#39;GLN&#39;</span><span class="p">:</span> <span class="mi">9</span><span class="p">,</span> <span class="s1">&#39;LYS&#39;</span><span class="p">:</span> <span class="mi">9</span><span class="p">,</span>
+                      <span class="s1">&#39;VAL&#39;</span><span class="p">:</span> <span class="mi">7</span><span class="p">,</span> <span class="s1">&#39;ILE&#39;</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span> <span class="s1">&#39;GLY&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="s1">&#39;THR&#39;</span><span class="p">:</span> <span class="mi">7</span><span class="p">,</span> <span class="s1">&#39;TYR&#39;</span><span class="p">:</span> <span class="mi">12</span><span class="p">,</span> <span class="s1">&#39;ALA&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
+                      <span class="s1">&#39;ARG&#39;</span><span class="p">:</span> <span class="mi">11</span><span class="p">,</span> <span class="s1">&#39;LEU&#39;</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span> <span class="s1">&#39;SER&#39;</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span> <span class="s1">&#39;HIS&#39;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="s1">&#39;PRO&#39;</span><span class="p">:</span> <span class="mi">7</span><span class="p">,</span> <span class="s1">&#39;ASP&#39;</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span>
+                      <span class="s1">&#39;CYS&#39;</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span> <span class="s1">&#39;TRP&#39;</span><span class="p">:</span> <span class="mi">14</span><span class="p">}</span>
+
+        <span class="k">return</span> <span class="nb">len</span><span class="p">([</span><span class="n">a</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">res</span> <span class="k">if</span> <span class="n">a</span><span class="o">.</span><span class="n">element</span> <span class="o">!=</span> <span class="s2">&quot;H&quot;</span><span class="p">])</span> <span class="o">!=</span> <span class="n">aa_atm_dic</span><span class="p">[</span><span class="n">res</span><span class="o">.</span><span class="n">resname</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="ChainSuperimposer.binding_site"><a class="viewcode-back" href="../../superimposition.html#pdb_superimposer.superimposition.ChainSuperimposer.binding_site">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">binding_site</span><span class="p">(</span><span class="n">chain</span><span class="p">,</span> <span class="n">hetid</span><span class="p">,</span> <span class="n">within</span><span class="o">=</span><span class="mf">8.0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Detect binding site residues for a supplied hetid</span>
+
+<span class="sd">        :param chain: A protein chain</span>
+<span class="sd">        :param hetid: A ligand identifier</span>
+<span class="sd">        :param within: A cutoff distance</span>
+<span class="sd">        :type chain: `Bio.PDB.Chain`</span>
+<span class="sd">        :type hetid: str</span>
+<span class="sd">        :type within: float</span>
+<span class="sd">        :return: A boolean list denoting inclusion in the superimposition operation</span>
+<span class="sd">        :rtype: list</span>
+
+<span class="sd">        &gt;&gt;&gt; from pdb_superimposer import ChainSuperimposer, Helper</span>
+<span class="sd">        &gt;&gt;&gt; ref = Helper.protein_from_file(&quot;2VTA&quot;, &quot;2VTA.pdb&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; ref_chain = [c for c in ref[0]][0]</span>
+<span class="sd">        &gt;&gt;&gt; ans = ChainSuperimposer.binding_site(ref_chain, &quot;LZ1&quot;, 10.0)</span>
+<span class="sd">        {1, 2, 3, ...}</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># array of ligand coords</span>
+        <span class="n">ligand</span> <span class="o">=</span> <span class="p">[</span><span class="n">resi</span> <span class="k">for</span> <span class="n">resi</span> <span class="ow">in</span> <span class="n">chain</span> <span class="k">if</span> <span class="n">hetid</span> <span class="ow">in</span> <span class="n">resi</span><span class="o">.</span><span class="n">get_id</span><span class="p">()[</span><span class="mi">0</span><span class="p">]][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">ligand_atms</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">atm</span><span class="o">.</span><span class="n">get_coord</span><span class="p">()</span> <span class="k">for</span> <span class="n">atm</span> <span class="ow">in</span> <span class="n">ligand</span><span class="p">])</span>
+        <span class="c1"># list of array&#39;s containing residue coords</span>
+        <span class="n">resi_atms</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">atm</span><span class="o">.</span><span class="n">get_coord</span><span class="p">()</span> <span class="k">for</span> <span class="n">atm</span> <span class="ow">in</span> <span class="n">resi</span><span class="p">])</span> <span class="k">for</span> <span class="n">resi</span> <span class="ow">in</span> <span class="n">chain</span> <span class="k">if</span> <span class="n">resi</span><span class="o">.</span><span class="n">get_id</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot; &quot;</span><span class="p">]</span>
+        <span class="c1"># loop through the residues,</span>
+        <span class="c1"># calculate and all-by-all atom distances</span>
+        <span class="c1"># if any atom is within the cutoff distance, return True</span>
+        <span class="k">return</span> <span class="p">{</span><span class="n">r</span><span class="o">.</span><span class="n">get_id</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">resi_atms</span> <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">amin</span><span class="p">(</span><span class="n">distance</span><span class="o">.</span><span class="n">cdist</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">ligand_atms</span><span class="p">))</span> <span class="o">&lt;=</span> <span class="n">within</span><span class="p">}</span></div></div>
+
+
+<span class="k">class</span> <span class="nc">Helper</span><span class="p">:</span>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">protein_from_file</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">fpath</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Reads a PDB file.</span>
+
+<span class="sd">        :param name: name of object</span>
+<span class="sd">        :param fpath: path to pdb file</span>
+<span class="sd">        :type name: str</span>
+<span class="sd">        :type fpath: str</span>
+<span class="sd">        :return: a protein structure</span>
+<span class="sd">        :rtype: `Bio.PDB.Structure.Structure`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">PDB</span><span class="o">.</span><span class="n">PDBParser</span><span class="p">()</span><span class="o">.</span><span class="n">get_structure</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">fpath</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">protein_to_file</span><span class="p">(</span><span class="n">structure</span><span class="p">,</span> <span class="n">fpath</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Writes a PDB to file.</span>
+
+<span class="sd">        :param structure: a protein structure</span>
+<span class="sd">        :param fpath: path for output pdb file</span>
+<span class="sd">        :type structure: `Bio.PDB.Structure.Structure`</span>
+<span class="sd">        :type fpath: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">io</span> <span class="o">=</span> <span class="n">PDB</span><span class="o">.</span><span class="n">PDBIO</span><span class="p">()</span>
+        <span class="n">io</span><span class="o">.</span><span class="n">set_structure</span><span class="p">(</span><span class="n">structure</span><span class="p">)</span>
+        <span class="n">io</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">fpath</span><span class="p">)</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Peter Curran
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

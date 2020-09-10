@@ -7,3 +7,6 @@ __pycache__
 
 # my data
 pdb/
+
+# ignore test build
+docsrc/_build

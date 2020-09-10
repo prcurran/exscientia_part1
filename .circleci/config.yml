@@ -12,7 +12,7 @@ jobs:
       - checkout
       # Step 2: create virtual env and install dependencies
       - run:
-          name: install dependencies
+          name: Install dependencies and package
           command: |
             python3 -m venv venv
             . venv/bin/activate
@@ -20,7 +20,7 @@ jobs:
             pip install .
       # Step 3: run tests
       - run:
-          name: run tests
+          name: Run tests
           command: |
             . venv/bin/activate
             python tests/test_superimposition.py
